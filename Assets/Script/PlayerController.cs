@@ -36,6 +36,7 @@ public class PlayerController : MonoBehaviour
     private float gravity;
     private bool canDash;
     private bool dashed;
+    Animator anim;
 
     public static PlayerController Instance;
 
@@ -57,6 +58,7 @@ public class PlayerController : MonoBehaviour
         canDash = true;
         pState = GetComponent<PlayerStateList>();
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
         gravity = rb.gravityScale;
     }
 
@@ -91,6 +93,7 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         rb.linearVelocity = new Vector2(walkSpeed * xAxis, rb.linearVelocity.y);
+        anim.SetBool("Walking", rb.linearVelocity.x != 0 && Grounded());
     }
 
     void StartDash()
@@ -111,6 +114,7 @@ public class PlayerController : MonoBehaviour
     {
         canDash = false;
         pState.dashing = true;
+        anim.SetTrigger("Dashing");
         rb.gravityScale = 0;
         rb.linearVelocity = new Vector2(transform.localScale.x * dashSpeed, 0);
         yield return new WaitForSeconds(dashTime);
@@ -179,5 +183,7 @@ public class PlayerController : MonoBehaviour
         {
             jumpBufferCounter = jumpBufferCounter - Time.deltaTime * 10;
         }
+
+        anim.SetBool("Jumping", !Grounded());
     }
 }
