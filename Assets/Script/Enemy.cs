@@ -3,10 +3,21 @@ using UnityEngine;
 public class Enemy : MonoBehaviour
 {
     [SerializeField] float health;
+    [SerializeField] float recoilLength;
+    [SerializeField] float recoilFactor;
+    [SerializeField] bool isRecoiling = false;
+
+    float recoilTimer;
+    Rigidbody2D rb;
     // Start is called once before the first execution of Update after the MonoBehaviour is created
     void Start()
     {
         
+    }
+
+    private void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
     }
 
     // Update is called once per frame
@@ -16,9 +27,25 @@ public class Enemy : MonoBehaviour
         {
             Destroy(gameObject);
         }
+        if (isRecoiling)
+        {
+            if(recoilTimer > recoilLength)
+            {
+                recoilTimer += Time.deltaTime;
+            }
+            else
+            {
+                isRecoiling = false;
+                recoilTimer = 0;
+            }
+        }
     }
-    public void EnemyHit(float _damagedone)
+    public void EnemyHit(float _damagedone, Vector2 _hitDirction, float _hitForce)
     {
         health -= _damagedone;
+        if (!isRecoiling)
+        {
+            rb.AddForce(-_hitForce * recoilFactor * _hitDirction);
+        }
     }
 }

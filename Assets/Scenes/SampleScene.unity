@@ -392,6 +392,10 @@ MonoBehaviour:
     m_Bits: 64
   damage: 2
   slashEffect: {fileID: 3983614411360201399, guid: 3ed8522b41b1e2f46a615b6e602231fc, type: 3}
+  recoilXSteps: 5
+  recoilYSteps: 5
+  recoilXSpeed: 10
+  recoilYSpeed: 10
 --- !u!114 &192936900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -406,6 +410,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   jumping: 0
   dashing: 0
+  recoilingX: 0
+  recoilingY: 0
+  lookingRight: 0
 --- !u!95 &192936901
 Animator:
   serializedVersion: 7
@@ -901,7 +908,7 @@ GameObject:
   - component: {fileID: 1721935528}
   - component: {fileID: 1721935527}
   m_Layer: 6
-  m_Name: Square
+  m_Name: Enemy
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -920,6 +927,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: '::'
   health: 10
+  recoilLength: 0.5
+  recoilFactor: 5
+  isRecoiling: 0
 --- !u!61 &1721935528
 BoxCollider2D:
   m_ObjectHideFlags: 0
