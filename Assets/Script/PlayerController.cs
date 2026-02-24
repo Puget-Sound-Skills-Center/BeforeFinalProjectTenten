@@ -39,15 +39,22 @@ public class PlayerController : MonoBehaviour
     [SerializeField] LayerMask attackableLayer;
     [SerializeField] float damage;
     [SerializeField] GameObject slashEffect;
+    [Space(5)]
 
     [Header("Recoil")]
-    [SerializeField] int recoilXSteps = 5;
-    [SerializeField] int recoilYSteps = 5;
-    [SerializeField] float recoilXSpeed = 10;
-    [SerializeField] float recoilYSpeed = 10;
-    int stepsXRecoiled, stepsYRecoiled;
+    [SerializeField] private int recoilXSteps = 5;
+    [SerializeField] private int recoilYSteps = 5;
+    [SerializeField] private float recoilXSpeed = 10;
+    [SerializeField] private float recoilYSpeed = 10;
+    private int stepsXRecoiled, stepsYRecoiled;
+    [Space(5)]
 
-    PlayerStateList pState;
+    [Header("Health Settings")]
+    public int health;
+    public int maxHealth;
+    [Space(5)]
+
+    [HideInInspector]public PlayerStateList pState;
     private Rigidbody2D rb;
     private float xAxis, yAxis;
     private float gravity;
@@ -67,6 +74,7 @@ public class PlayerController : MonoBehaviour
         {
             Instance = this;
         }
+        health = maxHealth;
     }
 
     // Start is called once before the first execution of Update after the MonoBehaviour is created
@@ -90,6 +98,12 @@ public class PlayerController : MonoBehaviour
         Flip();
         StartDash();
         Attack();
+    }
+
+    private void FixedUpdate()
+    {
+        if (pState.dashing) return;
+        Recoil();
     }
     void GetInputs()
     {
@@ -228,15 +242,15 @@ public class PlayerController : MonoBehaviour
         }
 
         //stop recoil
-        if(pState.recoilingX && stepsXRecoiled < recoilXSteps)
+        if (pState.recoilingX && stepsXRecoiled < recoilXSteps)
         {
             stepsXRecoiled++;
         }
-
         else
         {
             StopRecoilX();
         }
+
         if(pState.recoilingY && stepsYRecoiled < recoilYSteps)
         {
             stepsYRecoiled++;
@@ -245,6 +259,7 @@ public class PlayerController : MonoBehaviour
         {
             StopRecoilY();
         }
+
         if (Grounded())
         {
             StopRecoilY();
@@ -259,6 +274,26 @@ public class PlayerController : MonoBehaviour
     {
         stepsYRecoiled = 0;
         pState.recoilingY = false;
+    }
+
+    public void TakeDamage(float _damage)
+    {
+        health -= Mathf.RoundToInt(_damage);
+        StartCoroutine(StopTakingDamage());
+    }
+
+    IEnumerator StopTakingDamage()
+    {
+        pState.invincible = true;
+        anim.SetTrigger("TakeDamage");
+        ClampHealth();
+        yield return new WaitForSeconds(1f);
+        pState.invincible = false;
+    }
+
+    void ClampHealth()
+    {
+        health = Mathf.Clamp(health, 0, maxHealth);
     }
     public bool Grounded()
     {

@@ -128,7 +128,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 8104884}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Down Attack Transform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -159,7 +159,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 81292517}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Ground Check Point
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -196,9 +196,9 @@ GameObject:
   - component: {fileID: 192936899}
   - component: {fileID: 192936900}
   - component: {fileID: 192936901}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Player
-  m_TagString: Player
+  m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -396,9 +396,6 @@ MonoBehaviour:
   recoilYSteps: 5
   recoilXSpeed: 10
   recoilYSpeed: 10
-  health: 0
-  maxHealth: 100
-  pState: {fileID: 0}
 --- !u!114 &192936900
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -415,8 +412,7 @@ MonoBehaviour:
   dashing: 0
   recoilingX: 0
   recoilingY: 0
-  lookingRight: 1
-  invincible: 0
+  lookingRight: 0
 --- !u!95 &192936901
 Animator:
   serializedVersion: 7
@@ -876,7 +872,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1693513569}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Up Attack Transform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -910,8 +906,7 @@ GameObject:
   - component: {fileID: 1721935530}
   - component: {fileID: 1721935529}
   - component: {fileID: 1721935528}
-  - component: {fileID: 1721935532}
-  - component: {fileID: 1721935533}
+  - component: {fileID: 1721935527}
   m_Layer: 6
   m_Name: Enemy
   m_TagString: Untagged
@@ -919,6 +914,22 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
+--- !u!114 &1721935527
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1721935526}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b5dd62fdee0575540bc63d685c3d8782, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: '::'
+  health: 10
+  recoilLength: 0.5
+  recoilFactor: 5
+  isRecoiling: 0
 --- !u!61 &1721935528
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -953,7 +964,7 @@ BoxCollider2D:
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
-  m_Offset: {x: 0.001860261, y: 0.008616999}
+  m_Offset: {x: 0, y: 0}
   m_SpriteTilingProperty:
     border: {x: 0, y: 0, z: 0, w: 0}
     pivot: {x: 0.5, y: 0.5}
@@ -963,7 +974,7 @@ BoxCollider2D:
     drawMode: 0
     adaptiveTiling: 0
   m_AutoTiling: 0
-  m_Size: {x: 0.7814692, y: 0.89469385}
+  m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
 --- !u!50 &1721935529
 Rigidbody2D:
@@ -988,9 +999,9 @@ Rigidbody2D:
   m_ExcludeLayers:
     serializedVersion: 2
     m_Bits: 0
-  m_Interpolate: 1
+  m_Interpolate: 0
   m_SleepingMode: 1
-  m_CollisionDetection: 1
+  m_CollisionDetection: 0
   m_Constraints: 4
 --- !u!212 &1721935530
 SpriteRenderer:
@@ -1066,71 +1077,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1721935532
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1721935526}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a586beef72b81e146846f8ad9a83e155, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: '::'
-  health: 1000
-  recoilLength: 1
-  recoilFactor: 10
-  isRecoiling: 0
-  player: {fileID: 0}
-  speed: 1
-  damage: 2
---- !u!61 &1721935533
-BoxCollider2D:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1721935526}
-  m_Enabled: 1
-  serializedVersion: 3
-  m_Density: 1
-  m_Material: {fileID: 0}
-  m_IncludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_ExcludeLayers:
-    serializedVersion: 2
-    m_Bits: 0
-  m_LayerOverridePriority: 0
-  m_ForceSendLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ForceReceiveLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_ContactCaptureLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_CallbackLayers:
-    serializedVersion: 2
-    m_Bits: 4294967295
-  m_IsTrigger: 1
-  m_UsedByEffector: 0
-  m_CompositeOperation: 0
-  m_CompositeOrder: 0
-  m_Offset: {x: 0, y: 0}
-  m_SpriteTilingProperty:
-    border: {x: 0, y: 0, z: 0, w: 0}
-    pivot: {x: 0.5, y: 0.5}
-    oldSize: {x: 1, y: 1}
-    newSize: {x: 1, y: 1}
-    adaptiveTilingThreshold: 0.5
-    drawMode: 0
-    adaptiveTiling: 0
-  m_AutoTiling: 0
-  m_Size: {x: 1, y: 1}
-  m_EdgeRadius: 0
 --- !u!1 &1759806226
 GameObject:
   m_ObjectHideFlags: 0
@@ -1140,7 +1086,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1759806227}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Side Attack Transform
   m_TagString: Untagged
   m_Icon: {fileID: 0}
