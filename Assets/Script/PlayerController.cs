@@ -304,7 +304,7 @@ public class PlayerController : MonoBehaviour
     
     void FlashWhileInvincible()
     {
-        sr.material.color = pState ?
+        sr.material.color = pState.invincible ?
             Color.Lerp(Color.white, Color.black, Mathf.PingPong(Time.time * hitFlashSpeed, 1.0f)) : 
             Color.white;
     }
