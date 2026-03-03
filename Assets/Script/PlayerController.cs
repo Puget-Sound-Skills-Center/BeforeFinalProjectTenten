@@ -163,10 +163,10 @@ public class PlayerController : MonoBehaviour
         rb.gravityScale = 0;
         rb.linearVelocity = new Vector2(transform.localScale.x * dashSpeed, 0);
         if (Grounded()) Instantiate(dashEffect, transform);
-        yield return new WaitForSeconds(dashTime);
+        yield return new WaitForSecondsRealtime(dashTime);
         rb.gravityScale = gravity;
         pState.dashing = false;
-        yield return new WaitForSeconds(dashCooldown);
+        yield return new WaitForSecondsRealtime(dashCooldown);
         canDash = true;
     }
 
@@ -314,7 +314,7 @@ public class PlayerController : MonoBehaviour
         {
             if(Time.timeScale < 1)
             {
-                Time.timeScale += Time.deltaTime * restoreTimeSpeed;
+                Time.timeScale += Time.unscaledDeltaTime * restoreTimeSpeed;
             }
             else
             {
@@ -341,8 +341,8 @@ public class PlayerController : MonoBehaviour
 
     IEnumerator StartTimeAgain(float _delay)
     {
+        yield return new WaitForSecondsRealtime(_delay);
         restoreTime = true;
-        yield return new WaitForSeconds(_delay);
     }
     public int Health
     {
