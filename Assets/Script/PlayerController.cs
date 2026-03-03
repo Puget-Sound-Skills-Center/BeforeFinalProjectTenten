@@ -1,5 +1,7 @@
+using Microsoft.Unity.VisualStudio.Editor;
 using System.Collections;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class PlayerController : MonoBehaviour
 {
@@ -58,6 +60,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float hitFlashSpeed;
     public delegate void OnHealthChangedDelegate();
     [HideInInspector] public OnHealthChangedDelegate onHealthChangedCallback;
+    float healTimer;
+    [SerializeField] float timeToHeal;
+    [Space(5)]
+
+    [Header("Mana Settings")]
+    [SerializeField] UnityEngine.UI.Image manaStorage;
+    [SerializeField] float mana;
+    [SerializeField] float manaDrainSpeed;
+    [SerializeField] float manaGain;
     [Space(5)]
 
     [HideInInspector]public PlayerStateList pState;
@@ -92,6 +103,8 @@ public class PlayerController : MonoBehaviour
         sr = GetComponent<SpriteRenderer>();
         anim = GetComponent<Animator>();
         gravity = rb.gravityScale;
+        Mana = mana;
+        manaStorage.fillAmount = Mana;
     }
 
     // Update is called once per frame
@@ -108,6 +121,7 @@ public class PlayerController : MonoBehaviour
         Attack();
         RestoreTimeScale();
         FlashWhileInvincible();
+        Heal();
     }
 
     private void FixedUpdate()
@@ -138,7 +152,17 @@ public class PlayerController : MonoBehaviour
     private void Move()
     {
         rb.linearVelocity = new Vector2(walkSpeed * xAxis, rb.linearVelocity.y);
-        anim.SetBool("Walking", rb.linearVelocity.x != 0 && Grounded());
+        if(Input.GetButton("Horizontal") && Grounded())
+        {
+            anim.SetBool("Walking", rb.linearVelocity.x != 0);
+            pState.walking = true;
+        }
+        else
+        {
+            anim.SetBool("Walking", false);
+            pState.walking = false;
+        }
+        
     }
 
     void StartDash()
@@ -210,6 +234,11 @@ public class PlayerController : MonoBehaviour
             if(objectsToHit[i].GetComponent<Enemy>() != null)
             {
                 objectsToHit[i].GetComponent<Enemy>().EnemyHit(damage, (transform.position - objectsToHit[i].transform.position).normalized, _recoilStrength);
+
+                if (objectsToHit[i].CompareTag("Enemy"))
+                {
+                    Mana += manaGain;
+                }
             }
         }
     }
@@ -357,6 +386,44 @@ public class PlayerController : MonoBehaviour
                 {
                     onHealthChangedCallback.Invoke();
                 }
+            }
+        }
+    }
+    void Heal()
+    {
+        if(Input.GetButton("Healing") && Health < maxHealth && Mana > 0 && !pState.jumping && !pState.dashing && !pState.walking)
+        {
+            pState.healing = true;
+            anim.SetBool("Healing", true);
+
+            //healing
+            healTimer += Time.deltaTime;
+            if(healTimer >= timeToHeal)
+            {
+                Health++;
+                healTimer = 0;
+            }
+
+            //drain mana
+            Mana -= Time.deltaTime * manaDrainSpeed;
+        }
+        else
+        {
+            pState.healing = false;
+            anim.SetBool("Healing", false);
+            healTimer = 0;
+        }
+    }
+    float Mana
+    {
+        get { return mana; }
+        set
+        {
+            //if mana stats change
+            if(mana != value)
+            {
+                mana = Mathf.Clamp(value, 0, 1);
+                manaStorage.fillAmount = Mana;
             }
         }
     }
