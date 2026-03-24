@@ -39,7 +39,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Transform SideAttackTransform, UpAttackTransform, DownAttackTransform;
     [SerializeField] Vector2 SideAttackArea, UpAttackArea, DownAttackArea;
     [SerializeField] LayerMask attackableLayer;
-    [SerializeField] float damage;
+    [SerializeField] int damage;
     [SerializeField] GameObject slashEffect;
     bool restoreTime;
     float restoreTimeSpeed;
