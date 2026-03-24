@@ -67,8 +67,8 @@ public class PlayerController : MonoBehaviour
     [Header("Mana Settings")]
     [SerializeField] UnityEngine.UI.Image manaStorage;
     [SerializeField] float mana;
-    [SerializeField] float manaDrainSpeed;
-    [SerializeField] float manaGain;
+    [SerializeField] int manaDrainSpeed;
+    [SerializeField] int manaGain;
     [Space(5)]
 
     [HideInInspector]public PlayerStateList pState;
@@ -422,8 +422,8 @@ public class PlayerController : MonoBehaviour
             //if mana stats change
             if(mana != value)
             {
-                mana = Mathf.Clamp(value, 0, 1);
-                manaStorage.fillAmount = Mana;
+                mana = Mathf.Clamp(value, 0, 100);
+                manaStorage.fillAmount = Mana / 100;
             }
         }
     }
