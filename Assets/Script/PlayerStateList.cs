@@ -9,4 +9,5 @@ public class PlayerStateList : MonoBehaviour
     public bool invincible;
     public bool healing;
     public bool walking = false;
+    public bool casting;
 }

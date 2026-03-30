@@ -71,6 +71,15 @@ public class PlayerController : MonoBehaviour
     [SerializeField] int manaGain;
     [Space(5)]
 
+    [Header("Spell Settings")]
+    [SerializeField] float manaSpellCost = 30;
+    [SerializeField] float timeBetweenCast = 0.5f;
+    float timeSinceCast;
+    [SerializeField] float spellDamage;
+
+    [SerializeField] GameObject sideSpellFireBall;
+    [Space(5)]
+
     [HideInInspector]public PlayerStateList pState;
     private Rigidbody2D rb;
     private Animator anim;
@@ -122,6 +131,7 @@ public class PlayerController : MonoBehaviour
         RestoreTimeScale();
         FlashWhileInvincible();
         Heal();
+        CastSpell();
     }
 
     private void FixedUpdate()
@@ -425,6 +435,43 @@ public class PlayerController : MonoBehaviour
                 mana = Mathf.Clamp(value, 0, 100);
                 manaStorage.fillAmount = Mana / 100;
             }
+        }
+    }
+    
+    void CastSpell()
+    {
+        if (Input.GetButtonDown("CastSpell") && timeSinceCast >= timeBetweenCast && Mana >= manaSpellCost)
+        {
+            pState.casting = true;
+            timeSinceCast = 0;
+            StartCoroutine(CastCoroutine());
+        }
+        else
+        {
+            timeSinceCast += Time.deltaTime;
+        }
+    }
+
+    IEnumerator CastCoroutine()
+    {
+        anim.SetBool("Casting", true);
+        yield return new WaitForSecondsRealtime(0.15f);
+
+        //side cast
+        if (yAxis == 0 || (yAxis < 0 && Grounded()))
+        {
+            GameObject _fireBall = Instantiate(sideSpellFireBall, SideAttackTransform.position, Quaternion.identity);
+
+            //flip fireball
+            if (pState.lookingRight)
+            {
+                _fireBall.transform.eulerAngles = Vector3.zero;
+            }
+            else
+            {
+                _fireBall.transform.eulerAngles = new Vector2(_fireBall.transform.eulerAngles.x, 180);
+            }
+            pState.recoilingX = true;
         }
     }
     public bool Grounded()
