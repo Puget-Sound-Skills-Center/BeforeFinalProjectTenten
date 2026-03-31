@@ -133,7 +133,13 @@ public class PlayerController : MonoBehaviour
         Heal();
         CastSpell();
     }
-
+    private void OnTriggerEnter2D(Collider2D _other)
+    {
+        if(_other.GetComponent<Enemy>() != null && pState.casting)
+        {
+            _other.GetComponent<Enemy>().EnemyHit(spellDamage, (_other.transform.position - transform.position).normalized, -recoilYSpeed);
+        }
+    }
     private void FixedUpdate()
     {
         if (pState.dashing) return;
@@ -455,7 +461,7 @@ public class PlayerController : MonoBehaviour
     IEnumerator CastCoroutine()
     {
         anim.SetBool("Casting", true);
-        yield return new WaitForSecondsRealtime(0.15f);
+        yield return new WaitForSeconds(0.15f);
 
         //side cast
         if (yAxis == 0 || (yAxis < 0 && Grounded()))
@@ -473,6 +479,11 @@ public class PlayerController : MonoBehaviour
             }
             pState.recoilingX = true;
         }
+
+        Mana -= manaSpellCost;
+        yield return new WaitForSeconds(0.35f);
+        anim.SetBool("Casting", false);
+        pState.casting = false;
     }
     public bool Grounded()
     {
