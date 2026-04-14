@@ -78,6 +78,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] float spellDamage;
 
     [SerializeField] GameObject sideSpellFireBall;
+    float castOrHealtimer;
     [Space(5)]
 
     [HideInInspector]public PlayerStateList pState;
@@ -150,6 +151,15 @@ public class PlayerController : MonoBehaviour
         xAxis = Input.GetAxisRaw("Horizontal");
         yAxis = Input.GetAxisRaw("Vertical");
         attack = Input.GetButtonDown("Attack");
+
+        if (Input.GetButton("Cast/Heal"))
+        {
+            castOrHealtimer += Time.deltaTime;
+        }
+        else
+        {
+            castOrHealtimer = 0;
+        }
     }
 
     void Flip()
@@ -407,7 +417,7 @@ public class PlayerController : MonoBehaviour
     }
     void Heal()
     {
-        if(Input.GetButton("Healing") && Health < maxHealth && Mana > 0 && !pState.jumping && !pState.dashing && !pState.walking)
+        if(Input.GetButton("Cast/Heal") && castOrHealtimer > 0.05f && Health < maxHealth && Mana > 0 && !pState.jumping && !pState.dashing && !pState.walking)
         {
             pState.healing = true;
             anim.SetBool("Healing", true);
@@ -446,7 +456,7 @@ public class PlayerController : MonoBehaviour
     
     void CastSpell()
     {
-        if (Input.GetButtonDown("CastSpell") && timeSinceCast >= timeBetweenCast && Mana >= manaSpellCost)
+        if (Input.GetButtonUp("Cast/Heal") && castOrHealtimer <= 0.05f && timeSinceCast >= timeBetweenCast && Mana >= manaSpellCost)
         {
             pState.casting = true;
             timeSinceCast = 0;
@@ -501,26 +511,23 @@ public class PlayerController : MonoBehaviour
 
     void Jump()
     {
-        if(Input.GetButtonUp("Jump") && rb.linearVelocity.y > 0)
+        if (jumpBufferCounter > 0 && coyoteTimeCounter > 0 && !pState.jumping)
         {
-            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce);
+            pState.jumping = true;
+        }
+        if (!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump"))
+        {
+            pState.jumping = true;
+            airJumpCounter++;
+            rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce);
+        }
+        if (Input.GetButtonUp("Jump") && rb.linearVelocity.y > 3)
+        {
             pState.jumping = false;
+            rb.linearVelocity = new Vector2(rb.linearVelocity.x, 0);
         }
-
-        if (!pState.jumping)
-        {
-            if (jumpBufferCounter > 0 && coyoteTimeCounter > 0)
-            {
-                rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce);
-                pState.jumping = true;
-            }
-            else if(!Grounded() && airJumpCounter < maxAirJumps && Input.GetButtonDown("Jump"))
-            {
-                pState.jumping = true;
-                airJumpCounter++;
-                rb.linearVelocity = new Vector3(rb.linearVelocity.x, jumpForce);
-            }
-        }
+        anim.SetBool("Jumping", !Grounded());
     }
 
     void UpdateJumpVariables()
